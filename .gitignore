@@ -1,0 +1,10 @@
+.env
+node_modules
+dist
+__pycache__
+*.db
+.pytest_cache
+.deploy-state
+backend/fly.toml
+frontend/.vercel
+.venv

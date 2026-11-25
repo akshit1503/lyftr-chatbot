@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      LLM_API_KEYS: ${LLM_API_KEYS:?set LLM_API_KEYS in .env}
+      LLM_MODEL: ${LLM_MODEL:-gemini/gemini-2.0-flash}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/app.db}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+      ENABLE_FAILURE_SIMULATION: ${ENABLE_FAILURE_SIMULATION:-true}
+      CACHE_TYPE: ${CACHE_TYPE:-local}
+      MOCK_LLM: ${MOCK_LLM:-false}
+    volumes:
+      - appdata:/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  appdata:
